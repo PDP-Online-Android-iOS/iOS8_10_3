@@ -8,14 +8,26 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @ObservedObject var viewModel = HomeViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationStack {
+            ZStack {
+                if viewModel.isLoading {
+                    ProgressView()
+                }
+                
+                List {
+                    ForEach(viewModel.posts, id: \.id) { post in
+                        PostCell(post: post)
+                    }
+                }.listStyle(PlainListStyle())
+            }
+            .navigationTitle("Posts")
+        }.onAppear {
+            viewModel.apiPostList()
         }
-        .padding()
     }
 }
 
